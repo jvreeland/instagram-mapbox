@@ -1,0 +1,49 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+html, body, #container {
+  height: 100%;
+}
+#container {
+  position: relative;
+}
+#map {
+  height: 100%;
+}
+#media {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+#popover {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  height: 20px;
+  width: 20px;
+  background-color: blue;
+}
+.leaflet-popup-content, .leaflet-popup-content-wrapper, .marker-description {
+  width: 450px;
+}
+.marker-description {
+  height: 400px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
