@@ -1,17 +1,15 @@
-
-
-/* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
-
-html, body, #container {
+html, body {
   height: 100%;
 }
-#container {
-  position: relative;
+.navbar {
+  position: absolute;
 }
 #map {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   height: 100%;
+  width: 100%;
 }
 #media {
   position: absolute;
@@ -27,10 +25,19 @@ html, body, #container {
   background-color: blue;
 }
 .leaflet-popup-content, .leaflet-popup-content-wrapper, .marker-description {
+  margin-top: 50px;
   width: 450px;
+}
+.leaflet-control-zoom {
+  top: 50px;
 }
 .marker-description {
   height: 400px;
+}
+.icon-remove {
+  position: absolute;
+  top: 60px;
+  right: 0px;
 }
 
 

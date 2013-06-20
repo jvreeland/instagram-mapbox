@@ -17,8 +17,6 @@
         <!--[if lte IE 8]>
         <link href='http://api.tiles.mapbox.com/mapbox.js/v1.0.0/mapbox.ie.css' rel='stylesheet' />
         <![endif]-->
-
-        <script src="js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -30,27 +28,24 @@
                 <div class="container">
                     <a class="brand" href="#">Instagram Maps</a>
                     <div class="nav-collapse collapse">
-                        <!--<ul class="nav">-->
-                            <!--<li class="active"><a href="#">Home</a></li>-->
-                            <!--<li><a href="#about">About</a></li>-->
-                            <!--<li><a href="#contact">Contact</a></li>-->
-                        <!--</ul>-->
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="container">
-          <div id='map' class='dark'></div>
-          <div id="media"></div>
-        </div>
+        <div id='map' class='dark'></div>
 
         <script src="js/libs/mapbox.js"></script>
         <script data-main="js/main" src="js/libs/require.js"></script>
+        <script type="text/template" id="popover-template">
+          <div class="popup">
+          </div>
+        </script>
 
         <script type="text/template" id="item-template">
+          <div class="icon-remove"></div>
           <% _.each(mediaCollection, function(media) { %>
-          <div style=" height: 200px; width: 200px; display: inline-block; background-size: 100%; background-image: url('<%- media.images.standard_resolution.url %>') "></div>
+            <a href="<%- media.link %>" target="_blank" style=" height: 200px; width: 200px; display: inline-block; background-size: 100%; background-image: url('<%- media.images.standard_resolution.url %>') "></a>
           <% }); %>
           <div style="position: absolute; top: 100px; left: 160px;"></div>
         </script>

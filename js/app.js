@@ -1,18 +1,17 @@
-define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'router',
-  'bootstrap',
-  'views/AppView'// Request router.js
-], function($, _, Backbone, Router, Bootstrap, AppView){
-  var initialize = function(){
-//    Router.initialize();
-    var appView = new AppView();
-    appView.render();
-  }
+define(function(require, exports, module) {
+    var $ = require('jquery'),
+      _ = require('underscore'),
+      Backbone = require('backbone'),
+      Bootstrap = require('bootstrap'),
+      AppView = require('views/AppView');
 
-  return {
-    initialize: initialize
-  };
-});
+    var initialize = function(){
+      var appView = new AppView();
+      appView.render();
+    }
+
+    return {
+      initialize: initialize
+    };
+  }
+);

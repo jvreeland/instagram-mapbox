@@ -4,9 +4,9 @@ define([
   'backbone'
 ], function($, _, Backbone){
 
-  var Media = Backbone.Model.extend({
+  var Marker = Backbone.Model.extend({
     initialize: function() {
     }
   });
-  return Media;
+  return Marker;
 });
