@@ -12,9 +12,12 @@ html, body {
   width: 100%;
 }
 #media {
-  position: absolute;
-  top: 0px;
+  position: fixed;
+  bottom: 0px;
   left: 0px;
+  height: 200px;
+  width: 100%;
+  background: black;
 }
 #popover {
   position: absolute;
@@ -28,8 +31,13 @@ html, body {
   margin-top: 50px;
   width: 450px;
 }
-.leaflet-control-zoom {
+.leaflet-control-zoom,
+.leaflet-control-mapbox-geocoder{
   top: 50px;
+}
+.mapbox-button {
+  margin-top: -10px;
+  margin-left: 5px;
 }
 .marker-description {
   height: 400px;

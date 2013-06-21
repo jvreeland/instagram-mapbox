@@ -34,6 +34,7 @@
         </div>
 
         <div id='map' class='dark'></div>
+        <div id='media'></div>
 
         <script src="js/libs/mapbox.js"></script>
         <script data-main="js/main" src="js/libs/require.js"></script>
@@ -43,7 +44,7 @@
         </script>
 
         <script type="text/template" id="item-template">
-          <div class="icon-remove"></div>
+          <!--<div class="icon-remove"></div>-->
           <% _.each(mediaCollection, function(media) { %>
             <a href="<%- media.link %>" target="_blank" style=" height: 200px; width: 200px; display: inline-block; background-size: 100%; background-image: url('<%- media.images.standard_resolution.url %>') "></a>
           <% }); %>

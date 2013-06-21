@@ -18,58 +18,67 @@ define([
     template: _.template($('#item-template').html()),
 
     initialize: function() {
-      this.setupMap();
-      this.markers = new Markers();
+      this.initializeMap();
+      this.markerCollection = new Markers();
     },
 
-    setupMap: function() {
+    initializeMap: function() {
+      this.map = L.mapbox.map('map', 'examples.map-y7l23tes').setView([33.03, -117], 10);
+      this.map.addControl(L.mapbox.geocoderControl('examples.map-vyofok3q'));
+      this.mediaView = new MediaView({map: this.map});
+      this.initializeMapEvents();
+    },
+
+    initializeMapEvents: function() {
       var view = this;
-      this.map = L.mapbox.map('map', 'examples.map-20v6611k').setView([33.03, -117], 10);
-
-      this.map.markerLayer.on('ready', function() {
-        this.eachLayer(function(marker) {
-          marker.openPopup();
-        });
-      });
-
-      this.map.markerLayer.on('click', function() {
-        debugger;
-
-      });
-
       this.map.on('click', function(e) {
         view.lat = e.latlng.lat;
         view.lng = e.latlng.lng;
-        view.geoJsonMarker = new Marker({
+        var geoJsonMarker = new Marker({
           type: 'Feature',
           geometry: {
             type: 'Point',
             coordinates: [view.lng, view.lat]
           },
           properties: {
-            title: '',
-            description:'<div class="popup"><div class="icon-remove"></div></div>',
-            // one can customize markers by adding simplestyle properties
-            // http://mapbox.com/developers/simplestyle/
             'marker-size': 'large',
             'marker-color': '#f0a'
           }
         });
-        //map.markerLayer.clearLayers();
-        view.map.markerLayer.setGeoJSON(view.geoJsonMarker.toJSON());
-//        view.map.markerLayer.fireEvent('ready');
-//        $('.icon-remove').on('click',function(e) {
-//          this.map.markerLayer.clearLayers();
-//        });
-        view.renderPicturesView();
-        //TODO: Add the marker to the collection
-        //TODO: add click handler to load the images in marker description
+
+        view.markerCollection.add(geoJsonMarker);
+        view.mediaView.addMediaLocation(geoJsonMarker);
+        var myStyle = {
+          "color": "#ff7800",
+          "weight": 5,
+          "opacity": 0.65
+        };
+        L.geoJson(geoJsonMarker.toJSON(), {
+          style: myStyle,
+          onEachFeature: onEachFeature
+        }).addTo(view.map);
+
+        function onEachFeature(feature, layer) {
+          layer.on('click', function (e) {
+            view.markerCollection.each(function(model) {
+               if (model.get('geometry').coordinates == feature.geometry.coordinates) {
+                 view.mediaView.updateMediaLocation(model);
+                 return;
+               }
+            });
+          });
+        }
       });
     },
 
-    renderPicturesView: function() {
-      this.mediaView = new MediaView({map: this.map, marker: this.geoJsonMarker});
-      this.mediaView.updateLocation(this.lat, this.lng);
+    updateMediaLocation: function(geoJsonMarker) {
+      if (!this.mediaView) {
+        throw new Error('Media view not initialized')
+      } else if (!geoJsonMarker) {
+        throw new Error ('Need a marker')
+      } else {
+        this.mediaView.updateLocation(geoJsonMarker);
+      }
     }
   });
 

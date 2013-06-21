@@ -9,60 +9,67 @@ define([
   var MediaView = Backbone.View.extend({
     el: $("#media"),
     template: _.template($('#item-template').html()),
-    events: {
-      'click .icon-remove': 'iconRemove'
+    VIEW_STATE: {
+      NEW: 'new',
+      LOADING: 'loading',
+      LOADED: 'loaded'
     },
 
     initialize: function(options) {
-      this.marker = options.marker;
       this.map = options.map;
-      this.mediaCollection = new MediaCollection([], {lat: 48.858844, long: 2.294351});
       this.numberOfRequests = 0;
+      this.renderViewState(this.VIEW_STATE.NEW);
     },
 
-    iconRemove: function() {
-      debugger;
+    addMediaLocation: function(geoJsonMarker) {
+      this.marker = geoJsonMarker;
+      this.mediaCollection = new MediaCollection({lat: geoJsonMarker.get('geometry').coordinates[1], long: geoJsonMarker.get('geometry').coordinates[0]});
+      this.initializeData();
     },
 
     initializeData: function() {
       var view = this;
-//      $('.marker-description').append('Loading...');
+      view.renderViewState(this.VIEW_STATE.LOADING);
       this.mediaCollection.fetch().done(function(response) {
         if (response.meta.code == 400) {
           if (this.numberOfRequests > 10) {
-            //TODO: Display an error
-            return;
+            throw new Error('The instagram api is not responding');
           } else {
             this.numberOfRequests++;
             view.initializeData();
           }
         } else {
-          view.render();
+          var properties = view.marker.get('properties');
+          properties.images = view.mediaCollection.toJSON();
+          view.marker.set('properties', properties);
+          view.renderViewState(view.VIEW_STATE.LOADED);
         }
       });
     },
 
-    updateLocation: function(lat, lng) {
-      this.mediaCollection = new MediaCollection({lat: lat, long: lng});
-      this.initializeData();
+    updateMediaLocation: function(geoJsonMarker) {
+      this.marker = geoJsonMarker;
+      this.renderViewState(this.VIEW_STATE.LOADED);
     },
 
-    render: function() {
-      var properties = this.marker.get('properties');
-      properties.images = this.mediaCollection.toJSON();
-
-      this.marker.set('properties', properties);
-      this.map.markerLayer.fireEvent('ready');
-
-      var view = this;
-      //this.$el.apppend(this.template({mediaCollection: this.mediaCollection.toJSON().slice(0,4)}));
-      $('.marker-description').append(this.template({mediaCollection: this.mediaCollection.toJSON().slice(0,4)}));
-      $('.icon-remove').on('click', function() {
-        view.map.markerLayer.eachLayer(function(marker) {
-          marker.closePopup();
-        });
-      });
+    renderViewState: function(state) {
+      $(this.el).empty();
+      switch (state) {
+        case this.VIEW_STATE.LOADING:
+          $(this.el).append('Fetching images...');
+          break;
+        case this.VIEW_STATE.LOADED:
+          if (this.marker.get('properties').images.length == 0) {
+            $(this.el).append('No images for this location.  Try another location.')
+          } else {
+            $(this.el).append(this.template({mediaCollection: this.marker.get('properties').images}));
+          }
+          break;
+        default:
+          $(this.el).append('Select a location on the map to load images.');
+      }
     }
   });
+
   return MediaView;
 });
